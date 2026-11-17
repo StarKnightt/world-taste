@@ -1,5 +1,7 @@
 # world-taste
 
+[![skills.sh](https://skills.sh/b/StarKnightt/world-taste)](https://skills.sh/StarKnightt/world-taste)
+
 **Your coding agent builds 3D worlds. This skill gives it taste.**
 
 Ask Claude Code, Cursor or Codex for a 3D world and you usually get the same thing: flat light, one green, plastic water, a camera floating in the sky. world-taste fixes that with a process, not a list of tips. The agent picks an art direction, collects real reference photos, builds one system at a time, and then **opens the world in a real browser, screenshots it from fixed cameras, and compares it with the references** before it's allowed to call anything done.
