@@ -8,6 +8,8 @@ Ask Claude Code, Cursor or Codex for a 3D world and you usually get the same thi
 
 <p align="center"><sub>Caught by the browser check while building this repo: round 1 had grass growing underwater, milky water and stripy waves. Round 2 fixed all three.</sub></p>
 
+<p align="center"><a href="https://buymeacoffee.com/prasenx"><img src="assets/support/bmc-button.png" alt="Buy me a coffee" height="44"></a>&nbsp;&nbsp;<a href="https://github.com/sponsors/StarKnightt"><img src="assets/support/github-sponsor.svg" alt="Sponsor on GitHub" height="44"></a></p>
+
 ## Install
 
 One command, for every agent. The [skills CLI](https://github.com/vercel-labs/skills) finds the agents you have (Claude Code, Cursor, Codex, Gemini CLI, Copilot and more) and installs the skill where each one looks.
