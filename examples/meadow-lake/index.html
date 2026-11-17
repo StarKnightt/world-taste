@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><title>world-taste · meadow lake</title><style>html,body{margin:0;height:100%;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/"}}</script></head><body>
+<script type="module">
+import * as THREE from 'three';
+import { makeRenderer } from './render.js';
+import { makeSkyAndSun } from './sky.js';
+import { makeTerrain, heightAt } from './terrain.js';
+import { makeGrass } from './grass.js';
+import { makeWater } from './water.js';
+import { makeAmbience } from './audio.js';
+import { installWorldTaste } from './world-taste-hook.js';
+const renderer = makeRenderer(); const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 3000);
+const { sunDir } = makeSkyAndSun(scene, renderer, { elevation: 9, azimuth: 160 });
+makeTerrain(scene);
+// find the lowest point near the origin and flood around it
+let lo = { h: 1e9 }; for (let x = -200; x <= 200; x += 4) for (let z = -200; z <= 200; z += 4) { const h = heightAt(x, z); if (h < lo.h) lo = { h, x, z }; }
+const level = lo.h + 6;
+const water = makeWater(scene, heightAt, { level, sunDir });
+// walk out from the lake center until we hit dry land: that's the shore
+let sx = lo.x, sz = lo.z, dir = new THREE.Vector2(1, 0.4).normalize();
+for (let i = 0; i < 400 && heightAt(sx, sz) < level + 0.6; i++) { sx += dir.x; sz += dir.y; }
+const grass = makeGrass(scene, heightAt, { center: new THREE.Vector3(sx, 0, sz), radius: 30, count: 60000, minY: level + 0.3 });
+grass.mesh.material.uniforms.uSunDir.value.copy(sunDir);
+const world = { timeScale: 1 };
+installWorldTaste({ camera, setTimeScale: (s) => (world.timeScale = s), cameras: {
+  shore: { position: [sx + dir.x * 6, heightAt(sx + dir.x * 6, sz + dir.y * 6) + 1.8, sz + dir.y * 6], target: [lo.x, level, lo.z] },
+  low: { position: [sx - dir.x * 2, level + 0.6, sz - dir.y * 2], target: [lo.x, level - 0.5, lo.z] },
+}});
+if (!new URLSearchParams(location.search).get('cam')) window.__worldTaste.setCamera('shore');
+// click once for sound (browsers block audio until a user gesture)
+const amb = makeAmbience(); addEventListener('pointerdown', () => amb.start({ waterLevel: 0.2 }), { once: true });
+let t = 0; const clock = new THREE.Clock();
+renderer.setAnimationLoop(() => { t += clock.getDelta() * world.timeScale; grass.update(t); water.update(t); renderer.render(scene, camera); });
+</script></body></html>
